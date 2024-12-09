@@ -13,7 +13,7 @@ def do_connect():
     if not sta_if.isconnected():
         print('connecting to network...')
         sta_if.active(True)
-        sta_if.connect('VODAFONEF77C_EXTender', '32HRGUM7K9FFGXLK')
+        sta_if.connect('Your local router SSID', 'Your routers password')
         while not sta_if.isconnected():
             pass
     print('network config:', sta_if.ipconfig('addr4'))
