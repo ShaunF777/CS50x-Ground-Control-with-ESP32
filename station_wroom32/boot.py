@@ -31,7 +31,7 @@ pins_to_initialize = {
     2: 0,  # Turn off
     4: 0,  # Turn off
     5: 0,  # Turn off
-    17: 1  # Turn off
+    17: 1  # Turn on for test sequence
 }
 
 for pin_number, state in pins_to_initialize.items():

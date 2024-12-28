@@ -29,18 +29,17 @@ This project aims to:
 
 ## Project Folders  
 
-| Project Folder      | Description                                     | Readme Links         |  
+| Project Folder      | Description                                     | Hardware Links         |  
 |---------------------|-------------------------------------------------|-------------------------|  
-| station_wroom32            | CS50x Final Project                      | [\station_wroom32\README.md](#) |  
-| test_bme280_wroom32        | Humidity, Pressure, Temperature sensor   | [\test_bme280_wroom32\README.md](#) |  
-| test_simple_io_wroom32     | Digital & analogue in & outputs          | [\test_simple_io_wroom32\README.md](#) |  
-| test_wcs1800_wroom32       | Getting RMS amps from this sensor        | [\test_wcs1800_wroom32\README.md](#) |  
+| station_wroom32            | Description of Folder 1                         | [Link to Hardware 1](#) |  
+| test_bme280_wroom32            | Description of Folder 2                         | [Link to Hardware 2](#) |  
+| test_simple_io_wroom32            | Description of Folder 3                         | [Link to Hardware 3](#) |  
+| test_wcs1800_wroom32            | Description of Folder 4                         | [Link to Hardware 4](#) |  
 
 Each directory contains its own readme file, for a more in depth description of the code they contain.
 
 ## Project Help and Resources 
-
-> 💡💡💡 Before I forget, here are my sources, ladies and gentlemen. These helped me so much.
+Before i forget, here are my sources, ladies and gentleme, these helped me so much
 
 For taking notes, retention and understanding of information: 
 [Notion](https://www.notion.com/)
@@ -48,5 +47,3 @@ For taking notes, retention and understanding of information:
 
 For help getting started with different sensors and periferals even though i am using vscode:
 [RandomNerdTutorials - MicroPython](https://randomnerdtutorials.com/projects-esp32-esp8266-micropython/)
-
-## Getting started with VScode and the PyMakr extension
