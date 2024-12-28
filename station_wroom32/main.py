@@ -12,10 +12,14 @@ esp.osdebug(None)
 import gc
 gc.collect()
 
-
+time.sleep(2)
 # Initialize GPIO pin for the pump
 pump_pin = machine.Pin(5, machine.Pin.OUT)
 pump_pin.value(0)  # Default to OFF
+
+# Initialize GPIO pin 17 for extra
+aux_pin = machine.Pin(17, machine.Pin.OUT)
+aux_pin.value(0)  # Default to OFF
 
 # File to store the activation times
 TIME_FILE = "pump_times.txt"
@@ -50,19 +54,15 @@ def write_pump_times_amps():
 read_pump_times_amps()
 
 def get_system_info():
-    cpu_freq = machine.freq() // 1000000  # Get CPU frequency in MHz
     ram_used = gc.mem_alloc() // 1000
     ram_free = gc.mem_free() // 1000
-    flash_size = esp.flash_size() // 1000
     
     return {
-        "cpu_freq": cpu_freq,
         "ram_used": ram_used,
         "ram_free": ram_free,
-        "flash_size": flash_size
     }
 
-def web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, on_minute, off_hour, off_minute):
+def web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, on_minute, off_hour, off_minute, pump_pin, aux_pin, status_message=''):
     system_info = get_system_info()
   
     html = f"""
@@ -72,13 +72,17 @@ def web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, o
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <meta http-equiv="refresh" content="20">
             <style> 
-                body {{ text-align: center; font-family: "Trebuchet MS", Arial; margin: 0; padding: 20px; }}
+                body {{ text-align: center; font-family: "Trebuchet MS", Arial; margin: 0; padding: 20px;
+                    background-color:rgb(164, 16, 52);}}
                 table {{ border-collapse: collapse; width: 50%; margin-left: auto; margin-right: auto; }}
                 th, td {{ padding: 12px; border: 1px solid #ddd; }}
                 th {{ background-color: #0043af; color: white; }}
                 tr:hover {{ background-color: #f2f2f2; }}
                 .sensor {{ color: black; font-weight: bold; }}
                 .info {{ color: black; font-weight: bold; }}
+                .status-message {{  
+                    color: red;  
+                    font-size: 1.5em; /* Equivalent to H2 size */ }} 
             </style>
         </head>
         <body>
@@ -86,12 +90,14 @@ def web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, o
             <table>
                 <tr><th>MEASUREMENT</th><th>VALUE</th></tr>
                 <tr><td>South African Time</td><td><span class="info">{satime}</span></td></tr>
-                <tr><td>CPU Frequency</td><td><span class="info">{system_info['cpu_freq']} MHz</span></td></tr>
                 <tr><td>RAM Used</td><td><span class="info">{system_info['ram_used']} Kb</span></td></tr>
                 <tr><td>RAM Free</td><td><span class="info">{system_info['ram_free']} Kb</span></td></tr>
                 <tr><td>Last Known Average Current</td><td><span class="info">{av_current_drawn} Amp</span></td></tr>
                 <tr><td>Load Connected</td><td><span class="info">{load_status} </span></td></tr>
+                <tr><td>GPIO 5 Status</td><td><span class="info">{pump_pin.value()} </span></td></tr>
+                <tr><td>GPIO 17 Status</td><td><span class="info">{aux_pin.value()} </span></td></tr>
             </table>
+            <p class="status-message">{status_message}</p>  <!-- Display status message here --> 
             <h2>Set Pump Activation Times</h2>
             <form action="/update" method="post">
                 <label>ON Hour:</label>
@@ -103,14 +109,16 @@ def web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, o
                 <input type="number" name="off_hour" value="{off_hour}" min="0" max="23">
                 <label>OFF Minute:</label>
                 <input type="number" name="off_minute" value="{off_minute}" min="0" max="59">
-                <h2>Set Pump Min/Max Current</h2>
-                <label>Minimum Amps:</label>
-                <input type="number" name="min_amp" value="{min_amp}" min="0" max="13">
-                <label>Maximum Amps:</label>
+                <h2>Set Pump Min/Max Current Shut-off</h2>
+                <label>Minimum Amps (0-12):</label>
+                <input type="number" name="min_amp" value="{min_amp}" min="0" max="12">
+                <br>
+                <label>Maximum Amps (2-13):</label>
                 <input type="number" name="max_amp" value="{max_amp}" min="2" max="13">
+                <br>
                 <input type="submit" value="Update Settings">
             </form>
-            <h2>Control Outputs</h2>  
+            <h2>Toggle Control Outputs</h2>  
             <form action="/toggle" method="post">  
                 <button type="submit" name="pin" value="5">Toggle Pin 5</button>  
                 <button type="submit" name="pin" value="17">Toggle Pin 17</button>  
@@ -179,6 +187,7 @@ print("Web server is listening on port 80...")
 
 while True:
     satime = get_current_time()
+    status_message = ""
     try:
         if gc.mem_free() < 102000:
             gc.collect()
@@ -193,7 +202,7 @@ while True:
         av_current_drawn = round(get_average_scaled_current(), 2)  # Round average current drawn to 2 decimals 
         print(f"Average Current Drawn: {av_current_drawn}")
         load = get_load_indicator()
-        load_status = True if load else False  # Determine load status 
+        load_status = "Connected" if load else "Disconnected"  # Determine load status 
 
         # Handle the form submission for updating settings  
         if 'POST' in request:  
@@ -223,7 +232,8 @@ while True:
                 print(f"Updated Min amps: {min_amp}, Max amps: {max_amp}")  
                 
                 # Save the updated times to the file  
-                write_pump_times_amps()  
+                write_pump_times_amps() 
+                status_message = "Settings updated successfully!"  
 
             elif "/toggle" in request:  # Handle toggle button press  
                 pin_to_toggle = int(params.get('pin', '5'))  # Default to pin 5 if not specified  
@@ -233,39 +243,10 @@ while True:
                     pin = machine.Pin(pin_to_toggle, machine.Pin.OUT)  
                     pin.value(1 - pin.value())  # Toggle the pin state (1 -> 0 or 0 -> 1)  
                     print(f"Toggled Pin {pin_to_toggle} to {pin.value()}")  # Debugging message
-
-        """# Handle the form submission
-        if 'POST' in request:
-            request_body = request.split('\r\n\r\n')[1]
-            print(f"Request Body: {request_body}")  # Debugging line to check the request body  
-            params = dict(x.split('=') for x in request_body.split('&'))
-            min_amp = int(params.get('min_amp', 3))
-            max_amp = int(params.get('max_amp', 7))
-            on_hour = int(params.get('on_hour', 8))
-            on_minute = int(params.get('on_minute', 30))
-            off_hour = int(params.get('off_hour', 9))
-            off_minute = int(params.get('off_minute', 0))
-            print(f"Updated ON Time: {on_hour}:{on_minute}, OFF Time: {off_hour}:{off_minute}")
-            print(f"Updated Min amps: {min_amp}, Max amps: {max_amp}")
-            
-            # Save the updated times to the file
-            write_pump_times_amps()
-        
-        
-        elif "/toggle" in request:  # Handle toggle button press  
-                request_body = request.split('\r\n\r\n')[1]  
-                params = dict(x.split('=') for x in request_body.split('&'))  
-                pin_to_toggle = int(params.get('pin', 17))  # Default to pin 17 if not specified  
-                
-                if pin_to_toggle in [5, 17]:  
-                    # Toggle the specified pin  
-                    pin = machine.Pin(pin_to_toggle, machine.Pin.OUT)  
-                    pin.value(1 - pin.value())  # Toggle the pin state (1 -> 0 or 0 -> 1)  
-                    print(f"Toggled Pin {pin_to_toggle} to {pin.value()}")  # Debugging message  
-"""
+                    status_message = f"Pin {pin_to_toggle} toggled successfully!" 
 
         # Render the web page with updated status
-        response = web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, on_minute, off_hour, off_minute)
+        response = web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, on_minute, off_hour, off_minute, pump_pin, aux_pin, status_message)
         conn.send('HTTP/1.1 200 OK\n')
         conn.send('Content-Type: text/html\n')
         conn.send('Connection: close\n\n')
