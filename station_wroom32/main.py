@@ -98,6 +98,7 @@ def web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, o
                 <input type="number" name="on_hour" value="{on_hour}" min="0" max="23">
                 <label>ON Minute:</label>
                 <input type="number" name="on_minute" value="{on_minute}" min="0" max="59">
+                <br>
                 <label>OFF Hour:</label>
                 <input type="number" name="off_hour" value="{off_hour}" min="0" max="23">
                 <label>OFF Minute:</label>
@@ -194,9 +195,49 @@ while True:
         load = get_load_indicator()
         load_status = True if load else False  # Determine load status 
 
-        # Handle the form submission
+        # Handle the form submission for updating settings  
+        if 'POST' in request:  
+            # Extract the request body  
+            request_body = request.split('\r\n\r\n')[1] if '\r\n\r\n' in request else ''  
+            print(f"Request Body: {request_body}")  # Debugging line to check the request body  
+            
+            # Parse the request body manually  
+            params = {}  
+            if request_body:  
+                pairs = request_body.split('&')  
+                for pair in pairs:  
+                    if '=' in pair:  
+                        key, value = pair.split('=', 1)  # Split only on the first '='  
+                        params[key] = value  
+            
+            print(f"Parsed Parameters: {params}")  # Debugging line to check parsed parameters  
+            
+            if "/update" in request:  # Update settings request  
+                min_amp = int(params.get('min_amp', '3'))  # Use '3' as default if not found  
+                max_amp = int(params.get('max_amp', '7'))  # Use '7' as default if not found  
+                on_hour = int(params.get('on_hour', '8'))  # Use '8' as default if not found  
+                on_minute = int(params.get('on_minute', '30'))  # Use '30' as default if not found  
+                off_hour = int(params.get('off_hour', '9'))  # Use '9' as default if not found  
+                off_minute = int(params.get('off_minute', '0'))  # Use '0' as default if not found  
+                print(f"Updated ON Time: {on_hour}:{on_minute}, OFF Time: {off_hour}:{off_minute}")  
+                print(f"Updated Min amps: {min_amp}, Max amps: {max_amp}")  
+                
+                # Save the updated times to the file  
+                write_pump_times_amps()  
+
+            elif "/toggle" in request:  # Handle toggle button press  
+                pin_to_toggle = int(params.get('pin', '5'))  # Default to pin 5 if not specified  
+                
+                if pin_to_toggle in [5, 17]:  
+                    # Toggle the specified pin  
+                    pin = machine.Pin(pin_to_toggle, machine.Pin.OUT)  
+                    pin.value(1 - pin.value())  # Toggle the pin state (1 -> 0 or 0 -> 1)  
+                    print(f"Toggled Pin {pin_to_toggle} to {pin.value()}")  # Debugging message
+
+        """# Handle the form submission
         if 'POST' in request:
             request_body = request.split('\r\n\r\n')[1]
+            print(f"Request Body: {request_body}")  # Debugging line to check the request body  
             params = dict(x.split('=') for x in request_body.split('&'))
             min_amp = int(params.get('min_amp', 3))
             max_amp = int(params.get('max_amp', 7))
@@ -210,6 +251,7 @@ while True:
             # Save the updated times to the file
             write_pump_times_amps()
         
+        
         elif "/toggle" in request:  # Handle toggle button press  
                 request_body = request.split('\r\n\r\n')[1]  
                 params = dict(x.split('=') for x in request_body.split('&'))  
@@ -220,7 +262,7 @@ while True:
                     pin = machine.Pin(pin_to_toggle, machine.Pin.OUT)  
                     pin.value(1 - pin.value())  # Toggle the pin state (1 -> 0 or 0 -> 1)  
                     print(f"Toggled Pin {pin_to_toggle} to {pin.value()}")  # Debugging message  
-
+"""
 
         # Render the web page with updated status
         response = web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, on_minute, off_hour, off_minute)
