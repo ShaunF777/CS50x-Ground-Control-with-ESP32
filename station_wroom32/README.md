@@ -7,7 +7,7 @@ This project aims to:
 - Measure pump amperage to protect the pump.  
 
 ## Single part diagrams 
-[DOIT ESP32 DEVKIT V1](https://www.circuitstate.com/pinouts/doit-esp32-devkit-v1-wifi-development-board-pinout-diagram-and-reference/#PNG)
+[DOIT ESP32-WROOM DEVKIT V1](https://www.circuitstate.com/pinouts/doit-esp32-devkit-v1-wifi-development-board-pinout-diagram-and-reference/#PNG)
 ![ESP32-Wroom](../images/doit_esp32_devkit1.png)
 ![ESP32-Wroom-key](../images/doit_esp32_devkit1_key.png)
 - **GPIO pins 34, 35, 36 and 39 are input only.**
@@ -143,9 +143,10 @@ print("GPIO pins initialized")
 
 - Prints a message indicating the completion of GPIO pin initialization.
 
+## main.py the code that runs 2nd, and continuously. Here the real work starts.
 
-## Project Help and Resources 
-Before i forget, here are my sources, ladies and gentleme, these helped me so much
+
+# Project Help and Resources 
 
 For taking notes, retention and understanding of information: 
 [Notion](https://www.notion.com/)

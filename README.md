@@ -11,11 +11,11 @@ This project aims to:
 
 ## Diagram  
 
-![IoT Diagram](CS50x_Ground_control_IOT_diagram.jpg)  
+![IoT Diagram](/images/CS50x_Ground_control_IOT_diagram.jpg)  
 
 ## Parts & Functions  
 
-- **ESP-Wroom-32 (Do-IT version)**: Main controller for pump monitoring and control.  
+- **ESP32-Wroom (Do-IT version)**: Main controller for pump monitoring and control.  
 - **Relay board 3.3V**: Controls 220VAC outputs up to 10A.  
 - **WCS1800 Current board 3-12V**: Measures current from 0 - 25A AC.  
 - **5V DC Power Supply (PSU)**: Supplies 5V to the ESP32.  
@@ -25,18 +25,18 @@ This project aims to:
 
 ## Possible Future Additions  
 
-- **ESP32-C3-Mini-1**: Ground moisture monitoring and transmission to the ESP32-Wroom using ESPNOW protocol.  
+- **ESP32-C3-Mini-1**: Ground moisture & Humidity, Pressure, Temperature monitoring with bme280. Transmission of this information to the ESP32-Wroom using ESPNOW protocol.  
 
 ## Project Folders  
 
-| Project Folder      | Description                                     | Readme Links         |  
-|---------------------|-------------------------------------------------|-------------------------|  
-| station_wroom32            | CS50x Final Project                      | [\station_wroom32\README.md](#) |  
-| test_bme280_wroom32        | Humidity, Pressure, Temperature sensor   | [\test_bme280_wroom32\README.md](#) |  
-| test_simple_io_wroom32     | Digital & analogue in & outputs          | [\test_simple_io_wroom32\README.md](#) |  
-| test_wcs1800_wroom32       | Getting RMS amps from this sensor        | [\test_wcs1800_wroom32\README.md](#) |  
+| Project Folder Name         | Description                                     | Readme Links                                         |  Buying the things used here       |
+|-----------------------------|-------------------------------------------------|------------------------------------------------------|------------------------------------|  
+| station_wroom32             | CS50x Final Project                             | [README.md](/station_wroom32/README.md)              | **Custom Built** 
+| test_bme280_wroom32         | Humidity, Pressure, Temperature sensor          | [README.md](/test_bme280_wroom32/README.md)          | [BME280 with I2C](https://www.communica.co.za/products/hkd-baromtrc-sensr-bme280-3-3?variant=43731732988204)
+| test_simple_io_wroom32      | Digital & analogue in & outputs                 | [README.md](/test_simple_io_wroom32/README.md)       | [ESP32-Wroom](https://www.communica.co.za/products/bmt-esp-32-wifi-b-t-dev-board)
+| test_wcs1800_wroom32        | Getting RMS amps from this sensor               | [README.md](/test_wcs1800_wroom32/README.md)         | [WCS1800 Hall 25A Current Sensor](https://www.robotics.org.za/HW-671?search=wcs1800)
 
-Each directory contains its own readme file, for a more in depth description of the code they contain.
+Each directory contains its own readme file, for a more in depth description of their code.
 
 ## Project Help and Resources 
 
