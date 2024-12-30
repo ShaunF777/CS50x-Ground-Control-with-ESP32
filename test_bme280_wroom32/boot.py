@@ -21,7 +21,8 @@ i2c = I2C(scl=Pin(22), sda=Pin(21), freq=10000)
 station = network.WLAN(network.STA_IF)
 
 station.active(True)
-station.connect('VODAFONEF77C_EXTender', '32HRGUM7K9FFGXLK')
+station.connect('Router ssid1', 'Router password')
+
 
 while station.isconnected() == False:
   pass

@@ -18,12 +18,13 @@ This project aims to:
 - **Builtin LED is connected to GPIO2.**
 - **Some GPIO pins are used for interfacing flash memory and thus are not shown.**
 
+[3,3V 2 Channel High/Low Level Triger Relay Module with Optocoupler](https://www.communica.co.za/products/bdd-relay-board-2ch-3-3v?utm_source=www.communica.co.za&variant=47620050616620&sfdr_ptcid=31591_617_701056022&sfdr_hash=99be365224499160d9bb1f33df9e1613&gad_source=1&gclid=Cj0KCQiA4L67BhDUARIsADWrl7ESoeNl58OGLH5leLPfqXxXJ2_CKvnr-xlaqCA4ljWwufKBiJU78XAaAkmbEALw_wcB)
 ![2_Channel_Relay_Module](../images/2_channel_relay.jpg)
 
+[WCS1800 Hall 25A Current Sensor](https://www.robotics.org.za/HW-671?search=wcs1800)
 ![WCS1800_Hall_Current_Sensor](../images/wcs1800_hall_current_sensor.jpg)
 
 ## Project Diagram 
-
 ![Project Diagram](../images/CS50x_Ground_control_IOT_diagram.jpg)  
 
 ## Parts & Functions  
@@ -64,6 +65,14 @@ print("Starting main program...")
 
 **Network Initialization:**
 ```py
+# List of known networks and their passwords
+KNOWN_NETWORKS = {
+    'Router ssid1': 'Router password',
+    'Router ssid2': 'Router password',
+    'Router ssid3': 'Router password',
+    'Router ssid4': 'Router password'
+    }
+
 def do_connect():  
     # Create instances for connection objects  
     station = network.WLAN(network.STA_IF)  # For ESP station to connect to a router   
@@ -71,10 +80,9 @@ def do_connect():
     access_point.active(False)  # Deactivate access point interface
 
 ```
+- **KNOWN_NETWORKS:** Supply all the local router details, from which your device can choose to connect.
 - **station = network.WLAN(network.STA_IF):** Creates an instance for connecting to a router.
-
 - **access_point = network.WLAN(network.AP_IF):** Creates an instance for the ESP32 to act as an access point.
-
 - **access_point.active(False):** Deactivates the access point interface to prevent others from connecting to the ESP32.
 
 

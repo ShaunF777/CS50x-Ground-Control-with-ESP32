@@ -87,6 +87,7 @@ def web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, o
         </head>
         <body>
             <h1>CS50x Ground Control with ESP32</h1>
+            <a href="https://github.com/ShaunF777/ESP32-Ground-Control" target="_blank">Go to GitHub Repository</a>
             <table>
                 <tr><th>MEASUREMENT</th><th>VALUE</th></tr>
                 <tr><td>South African Time</td><td><span class="info">{satime}</span></td></tr>
@@ -127,6 +128,7 @@ def web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, o
     </html>
     """
     return html
+
 
 def time_based_control():
     global on_hour, on_minute, off_hour, off_minute
