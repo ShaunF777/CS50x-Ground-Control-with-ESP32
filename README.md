@@ -1,11 +1,11 @@
 # CS50x Final Project: Ground Control with ESP32
-## Introduction  
-> 🐱 **WELCOME!!!** 🐱 to my 1st full repo. This readme will share an overview of requirements to build my project the same way i did. Using a windows PC, [VScode](https://code.visualstudio.com/download), [PyMakr](https://github.com/sg-wireless/pymakr-vsc) extention & programming in [Micropython](https://micropython.org/).
-Build a micropython app that runs on an ESP-32, allowing scheduled control of a pump & sprinkler system. In short, the python code includes the front end HTML,CSS & JavaScript, as well as all the backend, connection, monitoring & serving code. Small but perfect for any person persuing full-stack dev. The ESP32 hosts this web application, serving the client with system information & forms for changing scheduled parameters for watering intervals. 
+## **Introduction**  
+> 🐱 **WELCOME!!!** 🐱 to my 1st full repo. This readme will share an overview of requirements to build my project the same way i did. Using a windows PC, [VScode](https://code.visualstudio.com/download), [PyMakr2](https://github.com/sg-wireless/pymakr-vsc) extension & programming in [Micropython](https://micropython.org/).
+Build a micropython app that runs on an ESP-32, allowing scheduled control of a pump & sprinkler system. In short, the python code includes the front end HTML, CSS & JavaScript, as well as all the backend, connection, monitoring & serving code. Small but perfect for any person pursuing full-stack dev. The ESP32 hosts this web application, serving the client with system information & forms for changing scheduled parameters for watering intervals. 
 
-> ☄️ **PS:_VERY_IMPORTANT_NOTICE:** ☄️ Compiling & Loading C++ to the esp32 takes 10-20x times longer. In `retrospect` i wasted many hours because I sometimes doubted the capabilities of the ESP32 and the micropython running on it & then each time went back to C/C++ Arduino and even Espressif-IDE frameworks. But then seeing how long it takes to compile and load, i just went back to [Micropython](https://micropython.org/). Dont do this to yourself, read my tips and pointers below in [Get started with VScode PyMakr extension](#get-started-with-vscode-pymakr-extension)  
+> ☄️ **PS:_VERY_IMPORTANT_NOTICE:** ☄️ Compiling & Loading C++ to the esp32 takes 10-20x times longer. In `retrospect` I wasted many hours because I sometimes doubted the capabilities of the ESP32 and the micropython running on it & then each time went back to C/C++ Arduino and even Espressif-IDE frameworks. But then seeing how long it takes to compile and load, i just went back to [Micropython](https://micropython.org/). Don't do this to yourself, read my tips and pointers below in [Get started with VScode PyMakr extension](#get-started-with-vscode-pymakr-extension)  
 
-## Table of Contents 
+## **Table of Contents** 
 - [Introduction](#introduction) 
 - [Project Usage](#project-usage) 
 - [Diagram](#diagram) 
@@ -13,21 +13,36 @@ Build a micropython app that runs on an ESP-32, allowing scheduled control of a 
 - [Future Additions](#future-additions) 
 - [Project Folders](#project-folders)
 - [Project Help & Resources](#project-help-and-resources)
-- [Program Flow Summary](#program-flow-summary) 
-- [Get started with VScode PyMakr extension](#get-started-with-vscode-pymakr-extension)
+- [Program Flow Summary](#program-flow-summary)
+  - [Boot.py Execution](#1-bootpy-execution)
+  - [Importing Modules](#2-importing-modules)
+  - [Initialization](#3-initialization)
+  - [Web Server Setup](#4-web-server-setup)
+  - [Threaded Functions](#5-threaded-functions)
+  - [Main Loop](#6-main-loop)
+  - [Generating and Sending Responses](#7-generating-and-sending-the-response)
+  - [Continuous Operation](#8-continuous-operation) 
+- [Get started with VScode PyMakr extension](#get-started-with-vscode-pymakr-extension-and-knowing-your-specific-esp32)
+  - [Step 1: Install Python 3](#step-1-install-python-3)
+  - [Step 2: Install Node.Js](#step-2-install-nodejs)
+  - [Step 3: Install PyMakr in VScode](#step-3-install-the-pymakr-extension-in-vscode)
+  - [Step 4: Device Connection & using ESPTOOL](#step-4-device-connection--using-esptool)
+  - [Step 5: Loading MicroPython Firmware to Device](#step-5-loading-micropython-firmware-to-device)
+  - [Step 6: Using Pymakr to load projects onto ESP32](#step-6-using-pymakr-to-load-your-project-onto-the-esp32-and-run-it)
+- [MicroPython help and tutorials](#micropython-help-and-tutorials)
 
-## Project Usage
+## **Project Usage**
 
 This project aims to:  
 - Save water by disabling the sprinklers when ground moisture is sufficient.  
 - Power a 0.35-2kW borehole pump that supplies water to a sprinkler system.  
 - Measure pump amperage to protect the pump.  
 
-## Diagram  
+## **Diagram** 
 
 ![IoT Diagram](/images/CS50x_Ground_control_IOT_diagram.jpg)  
 
-## Parts and Functions
+## **Parts and Functions**
 
 - **ESP32-Wroom (Do-IT version)**: Main controller for pump monitoring and control.  
 - **Relay board 3.3V**: Controls 220VAC outputs up to 10A.  
@@ -37,13 +52,13 @@ This project aims to:
 - **USB programming cable**: For programming the ESP32.  
 - **AC220 Power socket with 16A plug and lead**: For power supply.  
 
-## Future Additions  
+## **Future Additions**  
 
 - **ESP32-Wroom**: Calculating total Kwh, and posting the information to a cloud service, for better graphic histograms or trends.   
 
 - **ESP32-C3-Mini-1**: Remote Soil moisture & Humidity, Pressure, Temperature monitoring with bme280. Transmission of this information to the ESP32-Wroom using ESPNOW protocol.  
 
-## Project Folders  
+## **Project Folders**  
 
 | Project Folder Name         | Description                                     | Readme Links                                         |  Buying the things used here       |
 |-----------------------------|-------------------------------------------------|------------------------------------------------------|------------------------------------|  
@@ -54,19 +69,19 @@ This project aims to:
 
 Each directory contains its own readme file, for a more in depth description of their code.
 
-## Project Help and Resources 
+## **Project Help and Resources** 
 
 > 💡💡💡 Before I forget, here are my sources, ladies and gentlemen. These helped me so much.
 
 For taking notes, retention and understanding of information: 
 [Notion](https://www.notion.com/), 
-[Sider - Chatgpt Sidebar for Chrome](https://chromewebstore.google.com/detail/sider-chatgpt-sidebar-+-g/difoiogjjojoaoomphldepapgpbgkhkb)
+[Sider - ChatGpt Sidebar for Chrome](https://chromewebstore.google.com/detail/sider-chatgpt-sidebar-+-g/difoiogjjojoaoomphldepapgpbgkhkb)
 
-For help getting started with different sensors and periferals even though i am using vscode:
+For help getting started with different sensors and peripherals even though I am using vscode:
 [RandomNerdTutorials - MicroPython](https://randomnerdtutorials.com/projects-esp32-esp8266-micropython/)
 
-## Program Flow Summary
-### 1 bootpy Execution
+## **Program Flow Summary**
+### 1. boot.py Execution
 
 - The boot.py file runs once when the ESP32 is powered on or reset. It initializes essential tasks such as establishing a Wi-Fi connection and setting up initial GPIO configurations. This file ensures that the ESP32 is ready for operation before running the main program.
 
@@ -82,7 +97,7 @@ For help getting started with different sensors and periferals even though i am 
 
 ### 4. Web Server Setup:
 
-A socket is created to listen for incoming HTTP requests on port 80. This sets up a simple web server, allowing users to interact with the ESP32 through a web interface.
+A socket is created to listen for incoming HTTP requests on port 80. This implements a web server that handles continuous connections and allows for data exchange between the client and the server. In other words, allowing users to interact with the ESP32 through a web interface.
 
 ### 5. Threaded Functions:
 
@@ -108,56 +123,51 @@ A socket is created to listen for incoming HTTP requests on port 80. This sets u
 ### Program Flow Conclusion:
 > 🚦🚦🚦 **This structured flow ensures that the ESP32 operates effectively, allowing for real-time monitoring and control of the pump based on user-defined settings and current conditions. The combination of threaded functions and a responsive web server provides a robust solution for managing the pump system.** 🚦🚦🚦
 
-## Get started with VScode PyMakr extension and knowing your specific ESP32  
-> 🪔Im assuming youve already installed vscode. If not, install [VScode](https://code.visualstudio.com/download) . Then Python 3.9 or later is required, because youll be writing python scripts, just within the library confines of what micropython allows for your device. Also you'll need Node.js because PyMakr runs on Js.🪔
+## **Get started with VScode PyMakr extension and knowing your specific ESP32** 
+> 🪔I'm assuming you've already installed vscode. If not, install [VScode](https://code.visualstudio.com/download) . Then Python 3.9 or later is required, because you'll be writing python scripts, just within the library confines of what micropython allows for your device. Also you'll need Node.js because PyMakr runs on Js.🪔
 
-**Step 1: Install Python 3**
+## Step 1 Install Python 3
 1. Go to the [official Python website](https://www.pythonguis.com/installation/install-python-windows/) and download the latest version of Python 3. Make sure to choose the version that matches your system (Windows 64-bit or 32-bit).
 
 2. Open the downloaded file and run the installer.
 
 3. **Installation Options: During the installation, make sure to check the box that says "Add Python to PATH". This will ensure that Python is added to your system's PATH environment variable, making it easier to run Python from the command line.**
 
-4. Follow the rest of the prompts to complete the installation.
-
-**Step 2: Verify Python Installation**
+4. Follow the rest of the prompts to complete the installation. Then verify Python Installation.
 - Open Command Prompt: Press Win + R, type cmd, and press Enter.
 
 - Check Python Version: Type `python --version` and press Enter. You should see the version of Python that you installed.
 
-**Step 3: Install Node.js**
-- Download Node.js: Go to the [official Node.js website](https://nodejs.org/en/download) and download the latest version of Node.js. Make sure to choose the version that matches your system (Windows 64-bit or 32-bit).
+## Step 2 Install Node.js
+1. Download Node.js: Go to the [official Node.js website](https://nodejs.org/en/download) and download the latest version of Node.js. Make sure to choose the version that matches your system (Windows 64-bit or 32-bit).
 
-- Open the downloaded file and run the installer.
+2. Open the downloaded file and run the installer.
 
-- Installation Options: During the installation, you can leave the default settings as they are. The installer will automatically add Node.js to your system's PATH environment variable.
+3. Installation Options: During the installation, you can leave the default settings as they are. The installer will automatically add Node.js to your system's PATH environment variable.
 
-- Follow the rest of the prompts to complete the installation.
-
-**Step 4: Verify Node.js Installation**
+4. Follow the rest of the prompts to complete the installation. Now verify Node.js installation.
 - Open Command Prompt: Press Win + R, type cmd, and press Enter.
 
-- Check Node.jsVersion: Type node -v and press Enter. You should see the version of Node.js that you installed.
+  - Check Node.js Version: Type `node -v` and press Enter. You should see the version of Node.js that you installed.
 
-- Check npm Version: Type npm -v and press Enter. You should see the version of npm (Node Package Manager) that comes with Node.js.
+  - Check npm Version: Type `npm -v` and press Enter. You should see the version of npm (Node Package Manager) that comes with Node.js.
 
-**Step 5: Manually Add Node.js to PATH (if needed)**
-- Open Environment Variables Settings: Press Win + S, type "Environment Variables", and select "Edit the system environment variables".
+**If you have to manually add Node.js to PATH**
+1. Open Environment Variables Settings: Press Win + S, type "Environment Variables", and select "Edit the system environment variables".
 
-- Edit System Variables: In the System Properties window, click on the "Environment Variables" button.
+2. Edit System Variables: In the System Properties window, click on the "Environment Variables" button.
 
-- Add Node.jsPath: In the "System variables" section, find the variable named "Path" and click "Edit". Click "New" and add the path to your Node.js installation (typically C:\Program Files\nodejs).
+3. Add Node.js Path: In the "System variables" section, find the variable named "Path" and click "Edit". Click "New" and add the path to your Node.js installation (typically C:\Program Files\nodejs).
 
-- Apply Changes: Click "OK" to close all the dialog boxes.
+- Apply Changes: Click "OK" to close all the dialog boxes. Close and reopen the Command Prompt to apply the changes.
 
-- Restart Command Prompt: Close and reopen the Command Prompt to apply the changes.
 
-**Step 6: Verify PATH Variable**
+**Verify PATH Variable**
 - Open Command Prompt: Press Win + R, type cmd, and press Enter.
 
 - Check PATH Variable: Type **`echo %PATH%`** and press Enter. Look for the Node.js path (C:\Program Files\nodejs) in the output.
 
-**Step 7: Install the PyMakr Extension in VSCode**
+## Step 3 Install the PyMakr Extension in VSCode
 1. Launch Visual Studio Code.
 
 2. Install the Extension: Go to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or pressing Ctrl + Shift + X.
@@ -167,7 +177,7 @@ A socket is created to listen for incoming HTTP requests on port 80. This sets u
 
 4. Reload VSCode: After installing the extension, a reload button should appear. Press it to reload VSCode1. Otherwise, close and re-open vscode.
 
-**Step 8: Connect Your MicroPython Device & use esptool**
+## Step 4 Device Connection & using ESPTOOL
 1. Connect Your Device: Connect your MicroPython device to your PC via USB.
 
 2. Configure PyMakr: Follow the prompts provided by the PyMakr extension to set up your project folder and connect your device. You should typically have a boot.py, main.py & pymakr.conf file in your project folder. 
@@ -191,10 +201,10 @@ A socket is created to listen for incoming HTTP requests on port 80. This sets u
 
 > **In the flashing command; 0x1000 is a crucial address within the ESP32's flash memory. Different devices or firmware versions might require different memory addresses for flashing. That’s why specifying the correct address in the command is so important. Your command makes sure the MicroPython firmware is written to the right place in memory, allowing it to function properly.** 👈😃👍🤖
 
-**Step 9: Flash MicroPython Firmware**
-1. Download Firmware: Go to the [MicroPython website](https://micropython.org/download/) and download the appropriate latest, stable firmware for your device. Keep in mind every device has its own special firmware. I used this firmwre for my generic [ESP32 WROOM](https://micropython.org/download/ESP32_GENERIC/)
+## Step 5 Loading MicroPython Firmware to Device
+1. Download Firmware: Go to the [MicroPython website](https://micropython.org/download/) and download the appropriate latest, stable firmware for your device. Keep in mind every device has its own special firmware. I used this firmware for my generic [ESP32 WROOM](https://micropython.org/download/ESP32_GENERIC/)
 
-> 🔎🔎🔎 **Ive added the .bin file for my ESP32 Wroom just for you to see, but make sure your downloaded version is inside your project folder. Then with terminal, navigate to you're project folder before proceeding.** 🔎🔎🔎 
+> 🔎🔎🔎 **I've added the .bin file for my ESP32 Wroom just for you to see, but make sure your downloaded version is inside your project folder. Then with terminal, navigate to you're project folder before proceeding.** 🔎🔎🔎 
 
 2. Know your board & Flash Firmware: Follow the instructions provided by these sites. 
 
@@ -206,12 +216,13 @@ A socket is created to listen for incoming HTTP requests on port 80. This sets u
 
 [espressif.com-esp-dev-kits Documentation](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/)
 
-**But this is what i found to work:** 
-- Now double check your device COM port: In terminal type **`python -m serial.tools.list_ports`**. 
+**But this is what I found to work, and problems i had to figure out:** 
+- Check for your device COM port: In terminal type **`python -m serial.tools.list_ports`**. 
 - **This gives me COM8, so i'll be using COM8 as an example, in my terminal commands. Im also going to add the linux commands below, just for you to be able to see the difference, when using windows from Linux.**
 
 - To get your board info: **`python -m esptool -p COM8 flash_id`**
-- If you are putting MicroPython on your board for the first time then you should first erase the entire flash by holding in the **"BOOT/FLASH"** button and using this command: 
+- If you are putting MicroPython on your board for the first time then you should first erase the entire flash by holding in the **"BOOT/FLASH"** button and using this command:
+> 😤 IMPORTANT TO AVOID FRUSTRATION 😤: If you are currently connected to the device REPL, first disconnect before trying to erase or flash firmware, as the REPL needs to disengage/free the coms, for the esptool to be able to use it. For more on What REPL is, scroll down to STEP 10     
 ```shell
 for Linux: esptool.py --chip esp32 --port /dev/ttyUSB0 erase_flash
 for windows : python -m esptool --chip esp32 --port COM8 erase_flash  
@@ -235,23 +246,167 @@ for Windows: python -m esptool --chip esp32 --port COM8 --baud 460800 write_flas
 
 if you experience problems, load rather with normal speed and the verify command: python -m esptool --chip esp32 --port COM8 --baud 115200 write_flash -z 0x1000 ESP32_GENERIC-20241129-v1.24.1.bin --verify 
 ```
-- If you are succesfull so far, the process will show you the progress in persentage:
+- If you are succesful so far, the process will show you the progress in percentage:
 
 ![esptool busy flashing firmware onto the esp32](/images/esptool%20busy%20flashing.jpg)
 
-- **If you are succesfull, you will see this. Yippeeeeeee, you're ESP now has micropython on it:**
+- **If you are succesful, you will see this. Yippeeeeeee, you're ESP now has micropython on it:**
 
 ![esptool done flashing firmware onto esp32](/images/esptool%20finished%20flashing.jpg)
 
-> **Remember: This firmware goes into its own special memory area, so for any whatsoever reason you  need to reflash micropython onto your board, this will NOT erase your python project thats currently on it.** 
+> 🫡🤓 **Remember: This firmware goes into its own special memory area, so for any whatsoever reason you  need to reflash micropython onto your board, this will NOT erase your python project that's currently on it.** 🫡🤓
 
-**Step 10: Using PyMakr to load your project onto the ESP32, and run it**
+## Step 6 Using PyMakr to load your project onto the ESP32 and run it
+
+**Thank You PyMakr team!** 
+This page helped me understand basics of how things ought to work: [PyMakr2 Github - What's NEW](https://github.com/sg-wireless/pymakr-vsc/blob/next/WHATS_NEW.md)
 
 **Thank You DonskyTech!** 
-This video helped me with getting started using the extention: [DonskyTech - Micropython using VScode PyMakr on ESP32](https://youtu.be/YOeV14SESls)
+This video helped me with getting started actually using the extension: [DonskyTech - Micropython using VScode PyMakr on ESP32](https://youtu.be/YOeV14SESls)
 
-After the PyMakr2 installation, this is what you will see. with mine there's two icons in the activity bar. One for Pymakr devices, and another for the projects:
+After the PyMakr2 installation, making your project folder and connecting your device(drivers installed), when selecting the Pymakr icon, your sidebar should show this (below):
+- Pymakr devices; shows the connected devices here, for if you have multiple connected devices. 
+- PyMakr projects is the space I want to focus on :
+  - **`ADD DEVICES`** : When clicked, command pallet will drop a selection of the connected devices for you to select. To link a specific project to a specific device, click the correct device and then the OK button.
+  - When you hover over the connected device, buttons and a menu appear. 
+  - The other arrows point to your project showing connection status, and a button to connect/diconnect. Disconnecting is useful if your REPL is showing too much info in the terminal, or you need to flash or erase the firmware again. 
 
+![Sidebar Pymakr Connections](/images/Sidebar%20-%20PyMakr%20Projects%20connection.jpg)
+
+Now you want to be able to start communicating/writing code to the Micropython on the ESP32. That's where REPL 'coms' in very handy. 🤣'Coms' get it?🤣 Here is the tutorial I followed to help me using REPL and later just putting down some serious code.
+
+  - **REPL** is your own 2-way communication terminal. Links below tell you more of it, but **REPL** stands for Read Evaluate Print Loop, and is the name given to the interactive MicroPython prompt that you can access on the ESP32/ESP8266. 
+  - Using the **REPL** is by far the easiest way to test out your code and run commands.
+
+In the PyMakr sidebar, when you hover over the connected device, these buttons appear (below). 
+
+**From left to right they have the following functions:**
+- **`Create Terminal`**: For the REPL terminal to be opened in your terminal area.
+- **`Sync project to Device`**: You need to Stop Script to do this. Because my code implements a web server that handles continuous connections, I've had to put `time.sleep(10)` in my boot.py file, to allow me to reload new code by quickly:
+   1. Pressing the "EN/RESET" button
+   2. Stopping Script in the dropdown
+   3. Then clicking the Sync project to device button   
+- **`Download project from Device`**: To retrieve the project from the device
+- **`Open device in file explorer`**: Then you can see what's loaded currently
+- **`Disconnect device`**: Will disconnect the COM port and stop REPL
+
+![PyMakr device interaction](/images/Sidebar%20-%20PyMakr%20Projects%20buttons%20usage%20.jpg)
+
+On the Dropdown menu (below), I mostly use the "Stop Script" command every time before I load new code(Sync project), and when its done i would use "Hard reset device" to reset the ESP, so it can boot up afresh after new code was synced.
+
+![PyMakr device dropdown menu](/images/Sidebar%20-%20PyMakr%20Projects%20dropdwn%20usage%20.jpg)
+
+
+## MicroPython help and tutorials
+
+[MicroPython tutorial for esp32 and esp8266 using REPL. Scroll down to - 2.3 Using the REPL](https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html)
+
+
+A better understanding of the preset libraries available to you can be found by using the onboard help in the REPL. By specifying help() it will offer you the following:
+```shell
+MicroPython v1.24.1 on 2024-11-29; Generic ESP32 module with ESP32
+Type "help()" for more information.
+>>>
+>>> help()
+Welcome to MicroPython on the ESP32!
+
+For online docs please visit http://docs.micropython.org/
+
+For access to the hardware use the 'machine' module:
+
+import machine
+pin12 = machine.Pin(12, machine.Pin.OUT)
+pin12.value(1)
+pin13 = machine.Pin(13, machine.Pin.IN, machine.Pin.PULL_UP)
+print(pin13.value())
+i2c = machine.I2C(scl=machine.Pin(21), sda=machine.Pin(22))
+i2c.scan()
+i2c.writeto(addr, b'1234')
+i2c.readfrom(addr, 4)
+
+Basic WiFi configuration:
+
+import network
+sta_if = network.WLAN(network.STA_IF); sta_if.active(True)
+sta_if.scan()                             # Scan for available access points
+sta_if.connect("<AP_name>", "<password>") # Connect to an AP
+sta_if.connect("<AP_name>", "<password>") # Connect to an AP
+sta_if.connect("<AP_name>", "<password>") # Connect to an AP
+sta_if.isconnected()                      # Check for successful connection
+
+sta_if.connect("<AP_name>", "<password>") # Connect to an AP
+sta_if.isconnected()                      # Check for successful connection
+sta_if.connect("<AP_name>", "<password>") # Connect to an AP
+sta_if.isconnected()                      # Check for successful connection
+
+Control commands:
+  CTRL-A        -- on a blank line, enter raw REPL mode
+  CTRL-B        -- on a blank line, enter normal REPL mode
+  CTRL-C        -- interrupt a running program
+  CTRL-D        -- on a blank line, do a soft reset of the board
+  CTRL-E        -- on a blank line, enter paste mode
+
+For further help on a specific object, type help(obj)
+For a list of available modules, type help('modules')
+>>>
+```
+- Typing in **`help('modules')`** gives you the following device specific modules:
+
+```shell
+>>> help('modules')
+__main__          bluetooth         heapq             select
+_asyncio          btree             inisetup          socket
+_boot             builtins          io                ssl
+_espnow           cmath             json              struct
+_onewire          collections       machine           sys
+_thread           cryptolib         math              time
+_webrepl          deflate           micropython       tls
+aioespnow         dht               mip/__init__      uasyncio
+apa106            ds18x20           neopixel          uctypes
+array             errno             network           umqtt/robust
+asyncio/__init__  esp               ntptime           umqtt/simple
+asyncio/core      esp32             onewire           upysh
+asyncio/event     espnow            os                urequests
+asyncio/funcs     flashbdev         platform          vfs
+asyncio/lock      framebuf          random            webrepl
+asyncio/stream    gc                re                webrepl_setup
+binascii          hashlib           requests/__init__ websocket
+Plus any modules on the filesystem
+```
+- And you can go deeper, and see what functions are available inside each:
+
+```shell
+>>> help('flashbdev')
+object flashbdev is of type str
+  find -- <function>
+  rfind -- <function>
+  index -- <function>
+  rindex -- <function>
+  join -- <function>
+  split -- <function>
+  splitlines -- <function>
+  rsplit -- <function>
+  startswith -- <function>
+  endswith -- <function>
+  strip -- <function>
+  lstrip -- <function>
+  rstrip -- <function>
+  format -- <function>
+  replace -- <function>
+  count -- <function>
+  partition -- <function>
+  rpartition -- <function>
+  center -- <function>
+  lower -- <function>
+  upper -- <function>
+  isspace -- <function>
+  isalpha -- <function>
+  isdigit -- <function>
+  isupper -- <function>
+  islower -- <function>
+  encode -- <function>
+```
+- Also visit [MicroPython quick reference libraries for ESP](https://docs.micropython.org/en/latest/esp32/quickref.html)
 
 
 More information and tutorials can be found here:
