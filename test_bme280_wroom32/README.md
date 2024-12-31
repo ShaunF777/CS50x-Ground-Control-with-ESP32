@@ -1,4 +1,4 @@
-# CS50x Final Project: Ground Control with ESP32  
+# Using the BME280 
 
 Build a micropython app that runs on an ESP-32, allowing scheduled control of a pump & sprinkler system. The ESP32 includes a web application with system information & adjustable schedule parameters for watering intervals.  
 
