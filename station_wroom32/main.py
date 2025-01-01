@@ -100,7 +100,7 @@ def web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, o
             </table>
             <p class="status-message">{status_message}</p>  <!-- Display status message here --> 
             <h2>Set Pump Activation Times</h2>
-            <form action="/update" method="post">
+            <form action="/activity" method="post">
                 <label>ON Hour:</label>
                 <input type="number" name="on_hour" value="{on_hour}" min="0" max="23">
                 <label>ON Minute:</label>
@@ -190,54 +190,72 @@ print("Web server is listening on port 80...")
 while True:
     satime = get_current_time()
     status_message = ""
+    time.sleep(1)
     try:
         if gc.mem_free() < 102000:
             gc.collect()
         conn, addr = s.accept()
         conn.settimeout(3.0)
         print('Got a connection from %s' % str(addr))
-        request = conn.recv(1024)
+        request = conn.recv(1024) # Request is received in 1024 bytes
         conn.settimeout(None)
         request = request.decode()
-        print('Content = %s' % request)
+        #print('Content = %s' % request)
 
         av_current_drawn = round(get_average_scaled_current(), 2)  # Round average current drawn to 2 decimals 
-        print(f"Average Current Drawn: {av_current_drawn}")
+        #print(f"Average Current Drawn: {av_current_drawn}")
         load = get_load_indicator()
         load_status = "Connected" if load else "Disconnected"  # Determine load status 
 
-        # Handle the form submission for updating settings  
+        #Handle the form submission for updating settings  
         if 'POST' in request:  
-            # Extract the request body  
-            request_body = request.split('\r\n\r\n')[1] if '\r\n\r\n' in request else ''  
-            print(f"Request Body: {request_body}")  # Debugging line to check the request body  
-            
-            # Parse the request body manually  
-            params = {}  
-            if request_body:  
-                pairs = request_body.split('&')  
-                for pair in pairs:  
-                    if '=' in pair:  
-                        key, value = pair.split('=', 1)  # Split only on the first '='  
-                        params[key] = value  
-            
-            print(f"Parsed Parameters: {params}")  # Debugging line to check parsed parameters  
-            
-            if "/update" in request:  # Update settings request  
-                min_amp = int(params.get('min_amp', '3'))  # Use '3' as default if not found  
-                max_amp = int(params.get('max_amp', '7'))  # Use '7' as default if not found  
-                on_hour = int(params.get('on_hour', '8'))  # Use '8' as default if not found  
-                on_minute = int(params.get('on_minute', '30'))  # Use '30' as default if not found  
-                off_hour = int(params.get('off_hour', '9'))  # Use '9' as default if not found  
-                off_minute = int(params.get('off_minute', '0'))  # Use '0' as default if not found  
+
+            if "/activity" in request and not "/toggle" in request:  # Update settings request  
+                # Extract the request body  
+                request_body = request.split('\r\n\r\n')[1] if '\r\n\r\n' in request else ''  
+                print(f"Request Body: {request_body}")  # Debugging line to check the request body  
+                
+                # Parse the request body manually  
+                params = {}  
+                if request_body:  
+                    pairs = request_body.split('&')  
+                    for pair in pairs:  
+                        if '=' in pair:  
+                            key, value = pair.split('=', 1)  # Split only on the first '='  
+                            params[key] = value  
+                
+                print(f"Parsed Parameters: {params}")  # Debugging line to check parsed parameters  
+                
+                min_amp = int(params.get('min_amp', min_amp))  # Use current min_amp if not found  
+                max_amp = int(params.get('max_amp', max_amp))  # Use current max_amp if not found  
+                on_hour = int(params.get('on_hour', on_hour))  # Use current on_hour if not found  
+                on_minute = int(params.get('on_minute', on_minute))  # Use current on_minute if not found  
+                off_hour = int(params.get('off_hour', off_hour))  # Use current off_hour if not found  
+                off_minute = int(params.get('off_minute', off_minute))  # Use current off_minute if not found  
                 print(f"Updated ON Time: {on_hour}:{on_minute}, OFF Time: {off_hour}:{off_minute}")  
                 print(f"Updated Min amps: {min_amp}, Max amps: {max_amp}")  
                 
                 # Save the updated times to the file  
                 write_pump_times_amps() 
                 status_message = "Settings updated successfully!"  
+                print("Update was triggered")
 
-            elif "/toggle" in request:  # Handle toggle button press  
+            elif  "/toggle" in request and not "/activity" in request:  # Handle toggle button press  
+                # Extract the request body  
+                request_body = request.split('\r\n\r\n')[1] if '\r\n\r\n' in request else ''  
+                print(f"Request Body: {request_body}")  # Debugging line to check the request body  
+                
+                # Parse the request body manually  
+                params = {}  
+                if request_body:  
+                    pairs = request_body.split('&')  
+                    for pair in pairs:  
+                        if '=' in pair:  
+                            key, value = pair.split('=', 1)  # Split only on the first '='  
+                            params[key] = value  
+                
+                print(f"Parsed Parameters: {params}")  # Debugging line to check parsed parameters  
+                
                 pin_to_toggle = int(params.get('pin', '5'))  # Default to pin 5 if not specified  
                 
                 if pin_to_toggle in [5, 17]:  
@@ -245,7 +263,7 @@ while True:
                     pin = machine.Pin(pin_to_toggle, machine.Pin.OUT)  
                     pin.value(1 - pin.value())  # Toggle the pin state (1 -> 0 or 0 -> 1)  
                     print(f"Toggled Pin {pin_to_toggle} to {pin.value()}")  # Debugging message
-                    status_message = f"Pin {pin_to_toggle} toggled successfully!" 
+                    status_message = f"Pin {pin_to_toggle} toggled successfully!"
 
         # Render the web page with updated status
         response = web_page(load_status, av_current_drawn, satime, min_amp, max_amp, on_hour, on_minute, off_hour, off_minute, pump_pin, aux_pin, status_message)

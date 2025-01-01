@@ -204,7 +204,7 @@ A socket is created to listen for incoming HTTP requests on port 80. This implem
 ## Step 5 Loading MicroPython Firmware to Device
 1. Download Firmware: Go to the [MicroPython website](https://micropython.org/download/) and download the appropriate latest, stable firmware for your device. Keep in mind every device has its own special firmware. I used this firmware for my generic [ESP32 WROOM](https://micropython.org/download/ESP32_GENERIC/)
 
-> 🔎🔎🔎 **I've added the .bin file for my ESP32 Wroom just for you to see, but make sure your downloaded version is inside your project folder. Then with terminal, navigate to you're project folder before proceeding.** 🔎🔎🔎 
+> 🔎🔎🔎 **I've added .bin file for my ESP32 Wroom to this repo, but make sure your downloaded version is inside your project folder. Then with terminal, navigate to you're project folder before proceeding.** 🔎🔎🔎 
 
 2. Know your board & Flash Firmware: Follow the instructions provided by these sites. 
 
@@ -278,9 +278,8 @@ Now you want to be able to start communicating/writing code to the Micropython o
   - **REPL** is your own 2-way communication terminal. Links below tell you more of it, but **REPL** stands for Read Evaluate Print Loop, and is the name given to the interactive MicroPython prompt that you can access on the ESP32/ESP8266. 
   - Using the **REPL** is by far the easiest way to test out your code and run commands.
 
-In the PyMakr sidebar, when you hover over the connected device, these buttons appear (below). 
+**In the PyMakr sidebar, when you hover over the connected device, these buttons appear (below). From left to right they have the following functions:**
 
-**From left to right they have the following functions:**
 - **`Create Terminal`**: For the REPL terminal to be opened in your terminal area.
 - **`Sync project to Device`**: You need to Stop Script to do this. Because my code implements a web server that handles continuous connections, I've had to put `time.sleep(10)` in my boot.py file, to allow me to reload new code by quickly:
    1. Pressing the "EN/RESET" button
