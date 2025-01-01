@@ -1,4 +1,5 @@
-# CS50x Final Project: Ground Control with ESP32
+# CS50x Ground Control with ESP32
+### Video Demo: <https://www.youtube.com/watch?v=IRB6nPpGphI>
 ## **Introduction**  
 > 🐱 **WELCOME!!!** 🐱 to my 1st full repo. This readme will share an overview of requirements to build my project the same way i did. Using a windows PC, [VScode](https://code.visualstudio.com/download), [PyMakr2](https://github.com/sg-wireless/pymakr-vsc) extension & programming in [Micropython](https://micropython.org/).
 Build a micropython app that runs on an ESP-32, allowing scheduled control of a pump & sprinkler system. In short, the python code includes the front end HTML, CSS & JavaScript, as well as all the backend, connection, monitoring & serving code. Small but perfect for any person pursuing full-stack dev. The ESP32 hosts this web application, serving the client with system information & forms for changing scheduled parameters for watering intervals. 
