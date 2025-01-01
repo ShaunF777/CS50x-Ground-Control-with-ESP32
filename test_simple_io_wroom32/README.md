@@ -1,49 +1,49 @@
-# CS50x Final Project: Ground Control with ESP32  
+# GPIO Control for Pump and Auxiliary Device  
 
-Build a micropython app that runs on an ESP-32, allowing scheduled control of a pump & sprinkler system. The ESP32 includes a web application with system information & adjustable schedule parameters for watering intervals.  
+This code initializes two GPIO pins on a microcontroller (likely an ESP32 or similar) to control a pump and an auxiliary device. It alternates the states of these pins in a loop.  
 
-## Project Overview  
+## Code Breakdown  
 
-This project aims to:  
-- Save water by disabling the sprinklers when ground moisture is sufficient.  
-- Power a 0.35-2kW borehole pump that supplies water to a sprinkler system.  
-- Measure pump amperage to protect the pump.  
+### 1. Importing Libraries  
+```python  
+from machine import Pin  
+from time import sleep
+```
 
-## Diagram  
+- Pin: Used to control GPIO pins on the microcontroller.
+- sleep: Allows the program to pause for a specified amount of time.
 
-![IoT Diagram](CS50x_Ground_control_IOT_diagram.jpg)  
+## Initialization
 
-## Parts & Functions  
+```py
+print("Initialize GPIO pins")  
 
-- **ESP-Wroom-32 (Do-IT version)**: Main controller for pump monitoring and control.  
-- **Relay board 3.3V**: Controls 220VAC outputs up to 10A.  
-- **WCS1800 Current board 3-12V**: Measures current from 0 - 25A AC.  
-- **5V DC Power Supply (PSU)**: Supplies 5V to the ESP32.  
-- **Breadboard Jumpers assorted**: For connections.  
-- **USB programming cable**: For programming the ESP32.  
-- **AC220 Power socket with 16A plug and lead**: For power supply.  
+pump_pin = Pin(5, Pin.OUT)  # Initialize pin 5 as an output for the pump  
+aux_pin = Pin(17, Pin.OUT)   # Initialize pin 17 as an output for the auxiliary device  
+pump_pin.value(0)            # Set the pump pin to OFF (0)  
+aux_pin.value(0)             # Set the auxiliary pin to OFF (0)  
 
-## Possible Future Additions  
+print("GPIO pins initialized")
+```
+- Functionality:
+  - Initializes GPIO pin 5 for the pump and pin 17 for the auxiliary device as output pins.
+  - Sets both pins to a low state (OFF) initially.
 
-- **ESP32-C3-Mini-1**: Ground moisture monitoring and transmission to the ESP32-Wroom using ESPNOW protocol.  
+## Main Control Loop
+```py
+while True:  
+    pump_pin.value(0)        # Turn OFF the pump  
+    aux_pin.value(1)         # Turn ON the auxiliary device  
+    print(f"Pin 2 (Aux): {aux_pin.value()}, Pin 5 (Pump): {pump_pin.value()}")  
+    sleep(2)                 # Wait for 2 seconds  
 
-## Project Folders  
+    pump_pin.value(1)        # Turn ON the pump  
+    aux_pin.value(0)         # Turn OFF the auxiliary device  
+    print(f"Pin 2 (Aux): {aux_pin.value()}, Pin 5 (Pump): {pump_pin.value()}")  
+    sleep(2)                 # Wait for 2 seconds
+```
+- Functionality:Enters an infinite loop where it alternates the states of the pump and auxiliary pins:
+  - First, it turns the pump OFF and the auxiliary device ON, printing their states and pausing for 2 seconds.
+  - Then, it turns the pump ON and the auxiliary device OFF, again printing their states and pausing for another 2 seconds.
 
-| Project Folder      | Description                                     | Hardware Links         |  
-|---------------------|-------------------------------------------------|-------------------------|  
-| station_wroom32            | Description of Folder 1                         | [Link to Hardware 1](#) |  
-| test_bme280_wroom32            | Description of Folder 2                         | [Link to Hardware 2](#) |  
-| test_simple_io_wroom32            | Description of Folder 3                         | [Link to Hardware 3](#) |  
-| test_wcs1800_wroom32            | Description of Folder 4                         | [Link to Hardware 4](#) |  
-
-Each directory contains its own readme file, for a more in depth description of the code they contain.
-
-## Project Help and Resources 
-Before i forget, here are my sources, ladies and gentleme, these helped me so much
-
-For taking notes, retention and understanding of information: 
-[Notion](https://www.notion.com/)
-[Sider Chatgpt Sidebar for Chrome](https://chromewebstore.google.com/detail/sider-chatgpt-sidebar-+-g/difoiogjjojoaoomphldepapgpbgkhkb)
-
-For help getting started with different sensors and periferals even though i am using vscode:
-[RandomNerdTutorials - MicroPython](https://randomnerdtutorials.com/projects-esp32-esp8266-micropython/)
+> 😋This code continuously toggles the state of a pump and an auxiliary device connected to GPIO pins on a microcontroller. It provides a simple mechanism to control these devices in an alternating manner, with a 2-second delay between state changes.😋
